@@ -1,0 +1,19 @@
+/* Empty. Add your own CSS if you like */
+.dashboard .row {
+  height: 33.67%;
+}
+.dashboard a.item{
+  padding: 10px;
+  text-align: center;
+  height: 100%;
+}
+
+.dashboard a.item .icon {
+  color: #008637;
+  display: block;
+  font-size: 60px;
+}
+
+.dashboard a.item span{
+  display: inline-block;
+}
