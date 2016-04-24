@@ -102,6 +102,7 @@ angular.module('starter.controllers', [])
     var humidity = $scope.sensors.humidity;
     var soil = $scope.sensors.soilmoisture;
     var timestamp = $scope.sensors.timestamp;
+    console.log(temp);
     $http.get('http://riceman.mybluemix.net/api/storepackage?imageid='+imgid+'&score='+score+'&temp='+temp+'&humidity='+humidity+'&soilmoisture='+soil+'&timestamp='+timestamp).then(function(res){
       console.log(res.data);
       $ionicLoading.hide();
