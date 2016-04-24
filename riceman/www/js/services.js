@@ -5,5 +5,8 @@ angular.module('starter.services', [])
     fetch: function() {
       return $http.get("http://agtech.mybluemix.net/api/sensors")
     },
+    background_mode: function() {
+      return $http.get("http://riceman.mybluemix.net/api/crontask")
+    }
   };
 });

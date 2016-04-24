@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, RiceMan) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,6 +20,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    if(window.cordova && window.cordova.plugins.backgroundMode) {
+      document.addEventListener('deviceready', function () {
+        // Enable background mode
+        cordova.plugins.backgroundMode.enable();
+
+        // Called when background mode has been activated
+        cordova.plugins.backgroundMode.onactivate = function () {
+          setTimeout(function () {
+            RiceMan.background_mode();
+          }, 10000);
+        }
+      }, false);
+    }
+
   });
 })
 
