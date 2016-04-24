@@ -17,3 +17,22 @@
 .dashboard a.item span{
   display: inline-block;
 }
+
+.image-data {
+  position: relative;
+}
+
+.image-data img{
+  width: 100%;
+}
+
+.image-data .data-sensor{
+  position: absolute;
+  top: 0;
+  right: 20px;
+  background: #ffffff;
+  opacity: 0.6;
+  padding:20px;
+  border-radius: 20px;
+  margin-top: 10px;
+}
