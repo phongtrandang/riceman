@@ -81,7 +81,7 @@ angular.module('starter.controllers', [])
           $scope.sensors = tmp;
         });
       } else {
-        $scope.percent = 'This tree is not rice';
+        $scope.percent = data.score * 100;
       }
       $ionicLoading.hide();
     });
