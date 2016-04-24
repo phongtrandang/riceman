@@ -129,7 +129,7 @@ router.get('/sensors', function(req, res) {
 
         var tmpRes = [];
         for (var i = 0; i < result.docs.length; i++) {
-            tmpRes.push({temp: result.docs[i].temp, humidity: result.docs[i].humidity, soilmoisture: result.docs[i].soilmoisture, light:0, timestamp: result.docs[i].timestamp, comments: result.docs[i].comments});
+            tmpRes.push({imageid: result.docs[i].imageid, temp: result.docs[i].temp, humidity: result.docs[i].humidity, soilmoisture: result.docs[i].soilmoisture, light:0, timestamp: result.docs[i].timestamp, comments: result.docs[i].comments});
         }
         res.json(tmpRes);
         return;
@@ -155,7 +155,7 @@ router.get('/storepackage', function(req, res) {
   var data = {
     imageid: req.query.imageid,
     score: req.query.score,
-    temp: req.query.temp,
+    temp: Number(req.query.temp),
     humidity: req.query.humidity,
     soilmoisture: req.query.soilmoisture,
     timestamp: Number(req.query.timestamp)
