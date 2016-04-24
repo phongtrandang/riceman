@@ -32,12 +32,20 @@
         <button class="ion-plus-round button icon button-full button-positive" ng-click="choosePhoto()"> Choose Image </button>
       </div>
     </div>
-    <div class="row">
-      <button class="ion-search button icon button-full button-positive" ng-click="checkPhoto()"></button>
+    <div class="row" ng-show="imgURI !== undefined">
+      <button class="button icon button-full button-positive" ng-click="checkPhoto()">Verify this tree</button>
     </div>
-    <div class="row">
+    <div class="row image-data">
       <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}" style="text-align: center">
-      <p ng-show="percent !== undefined">{{percent | number:4}} % Rices</p>
+      <div class="data-sensor" ng-show="percent !== undefined">
+        <span ng-show="percent !== undefined">Rice: {{percent | number:2}} %</span><br/>
+        <span ng-show="sensors.soilmoisture !== undefined">Soil Moisture: {{sensors.soilmoisture}}%</span><br/>
+        <span ng-show="sensors.humidity !== undefined">Humidity: {{sensors.humidity}}%</span><br/>
+        <span ng-show="sensors.temp !== undefined">Temp: {{sensors.temp}}<sup>o</sup></span><br/>
+      </div>
+    </div>
+    <div class="row" ng-show="sensors.soilmoisture !== undefined">
+      <button class="ion-android-upload button icon button-full button-positive" ng-click="StoreInfor()"></button>
     </div>
   </ion-content>
 </ion-view>
