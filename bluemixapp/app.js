@@ -155,7 +155,7 @@ router.get('/storepackage', function(req, res) {
   var data = {
     imageid: req.query.imageid,
     score: req.query.score,
-    temp: req.query.temperature,
+    temp: req.query.temp,
     humidity: req.query.humidity,
     soilmoisture: req.query.soilmoisture,
     timestamp: Number(req.query.timestamp)
