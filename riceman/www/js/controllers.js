@@ -96,7 +96,7 @@ angular.module('starter.controllers', [])
       maxWidth: 200,
       showDelay: 0
     });
-    var imgid = $scope.imagedata.image;
+    /*var imgid = $scope.imagedata.image;
     var score = $scope.imagedata.score;
     var temp = $scope.sensors.temp;
     var humidity = $scope.sensors.humidity;
@@ -106,6 +106,25 @@ angular.module('starter.controllers', [])
     $http.get('http://riceman.mybluemix.net/api/storepackage?imageid='+imgid+'&score='+score+'&temp='+temp+'&humidity='+humidity+'&soilmoisture='+soil+'&timestamp='+timestamp).then(function(res){
       console.log(res.data);
       $ionicLoading.hide();
+    });*/
+
+    var fileURL = $scope.imgURI;
+    var options = {
+      content: 'Loading',
+      fileKey: "file",
+      fileName: 'test.jpeg',
+      chunkedMode: true,
+      mimeType: "image/jpeg",
+    };
+
+    $cordovaFileTransfer.upload("http://ricedata.hackanoi.com/upload-single", fileURL, options).then(function(result) {
+      console.log("SUCCESS: " + JSON.stringify(result.response));
+      $ionicLoading.hide();
+    }, function(err) {
+      $ionicLoading.hide();
+      console.log("ERROR: " + JSON.stringify(err));
+    }, function (progress) {
+      // constant progress updates
     });
   }
 });
