@@ -12,3 +12,9 @@ The Node.js Starter demonstrates a simple, reusable Node.js web application base
 6. Access the running app in a browser at http://localhost:6001
 
 [Install Node.js]: https://nodejs.org/en/download/
+
+## Notice
+
+Before pushing to bluemix, follow these steps:  
+1. Run `cp .env.example .env`  
+2. Configure your bluemix account in `.env` file

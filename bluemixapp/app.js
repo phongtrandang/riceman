@@ -25,26 +25,34 @@ app.use(bodyParser.json());
 var appEnv = cfenv.getAppEnv();
 var router = express.Router();
 
+// setting up
+var Cloudant = require('cloudant');
+require('dotenv').load();
+var username = process.env.cloudant_username;
+var password = process.env.cloudant_password;
+var cloudant = Cloudant({account: username, password: password});
+
+var iotf = require("ibmiotf");
+var iotf_org = process.env.iotf_org;
+var iotf_id = process.env.iotf_id;
+var iotf_auth_key = process.env.iotf_auth_key;
+var iotf_auth_token = process.env.iotf_auth_token;
+var iotf_config = {
+  'org': iotf_org,
+  'id': iotf_id,
+  'auth-key': iotf_auth_key,
+  'auth-token': iotf_auth_token,
+  'auth-method': 'token',
+  'type': 'shared'
+};
+var appClient = new iotf.IotfApplication(iotf_config);
+
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
 
-
-var Cloudant = require('cloudant');
-
 router.get('/crontask', function(req, res){
-    var iotf = require("ibmiotf");
-    var appClientConfig = {
-      org: '1sihq1',
-      id: 'myapp',
-      "auth-key": 'a-1sihq1-lmejvsoyvz',
-      "auth-token": '+GSuDjN@2CRTLLNAtS',
-      "auth-method": "token",
-      "type": "shared"
-    };
-
-    var appClient = new iotf.IotfApplication(appClientConfig);
     appClient.connect();
 
     appClient.on('connect', function () {
@@ -60,19 +68,8 @@ router.get('/crontask', function(req, res){
               soilmoisture: (tmp.d.potentiometer2 * 100).toFixed(1),
               timestamp: (new Date).getTime()
             }
-            // var data = { 'temp' : tmp[0], 'humidity': tmp[1], 'soilmoisture': tmp[2], 'light': 0};
-            // var date = new Date();
-            // data.timestamp = date.getTime();
-
-            var cloudant = Cloudant("https://8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix:6f37e8f02528019bb2f86db43e33f49d2172d2e31c933aa9d72f849d8b2e707a@8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix.cloudant.com",
-                function(err, cloudant) {
-                    if (err) {
-                      return console.log('Failed to initialize Cloudant: ' + err.message);
-                    }
-                }
-            );
-
-            var db = cloudant.db.use("agtech");
+            
+            var db = cloudant.db.use('agtech');
             db.insert(data, function(){
               console.log('sensors data updated');
               res.send({ message: 'sensors data updated.' });
@@ -84,16 +81,6 @@ router.get('/crontask', function(req, res){
 })
 
 router.get('/sensordata', function(req, res) {
-
-    // Initialize the library with my account.
-    var cloudant = Cloudant("https://8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix:6f37e8f02528019bb2f86db43e33f49d2172d2e31c933aa9d72f849d8b2e707a@8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix.cloudant.com",
-      function(err, cloudant) {
-        if (err) {
-          return console.log('Failed to initialize Cloudant: ' + err.message);
-        }
-      }
-    );
-
     var db = cloudant.db.use("agtech");
     db.find({"sort": [{"timestamp": "desc"}], "limit":1, "selector": {"timestamp": {"$gt": 0 } } }, function(er, result) {
         if (er) {
@@ -111,16 +98,6 @@ router.get('/sensordata', function(req, res) {
 });
 
 router.get('/sensors', function(req, res) {
-
-    // Initialize the library with my account.
-    var cloudant = Cloudant("https://8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix:6f37e8f02528019bb2f86db43e33f49d2172d2e31c933aa9d72f849d8b2e707a@8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix.cloudant.com",
-      function(err, cloudant) {
-        if (err) {
-          return console.log('Failed to initialize Cloudant: ' + err.message);
-        }
-      }
-    );
-
     var db = cloudant.db.use("agtech");
     db.find({"sort": [{"timestamp": "desc"}], "limit":10, "selector": {"timestamp": {"$gt": 0 } } }, function(er, result) {
         if (er) {
@@ -129,7 +106,7 @@ router.get('/sensors', function(req, res) {
 
         var tmpRes = [];
         for (var i = 0; i < result.docs.length; i++) {
-            tmpRes.push({temp: result.docs[i].temp, humidity: result.docs[i].humidity, soilmoisture: result.docs[i].soilmoisture, light:0, timestamp: result.docs[i].timestamp, comments: result.docs[i].comments});
+            tmpRes.push({imageid: result.docs[i].imageid, temp: result.docs[i].temp, humidity: result.docs[i].humidity, soilmoisture: result.docs[i].soilmoisture, light:0, timestamp: result.docs[i].timestamp, comments: result.docs[i].comments});
         }
         res.json(tmpRes);
         return;
@@ -142,20 +119,12 @@ router.get('/graphs', function (req, res) {
 });
 
 router.get('/storepackage', function(req, res) {
-  var cloudant = Cloudant("https://8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix:6f37e8f02528019bb2f86db43e33f49d2172d2e31c933aa9d72f849d8b2e707a@8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix.cloudant.com",
-      function(err, cloudant) {
-        if (err) {
-          return console.log('Failed to initialize Cloudant: ' + err.message);
-        }
-      }
-  );
-
   var db = cloudant.db.use('agtech');
 
   var data = {
     imageid: req.query.imageid,
     score: req.query.score,
-    temp: req.query.temp,
+    temp: Number(req.query.temp),
     humidity: req.query.humidity,
     soilmoisture: req.query.soilmoisture,
     timestamp: Number(req.query.timestamp)
@@ -173,15 +142,7 @@ router.get('/storepackage', function(req, res) {
 
 router.post('/cloudant', function (req, res) {
   var timestamp = Number(req.body.timestamp);
-
-  var cloudant = Cloudant("https://8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix:6f37e8f02528019bb2f86db43e33f49d2172d2e31c933aa9d72f849d8b2e707a@8cd7b256-b57e-4822-ab9f-7dbf2b6a9a8f-bluemix.cloudant.com",
-      function(err, cloudant) {
-        if (err) {
-          return console.log('Failed to initialize Cloudant: ' + err.message);
-        }
-      }
-    );
-
+  
   var db = cloudant.db.use('agtech');
 
   var select =

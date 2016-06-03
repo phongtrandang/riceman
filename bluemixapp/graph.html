@@ -38,7 +38,14 @@
                     <tbody>
                         <tr v-for="sensor in sensors">
                             <td>{{ timestamps[$index].text }}</td>
-                            <td>Pictures</td>
+                            <td>
+                                <div v-if="sensor.imageid">
+                                    <image src="http://hackanoi-visual-recognition.mybluemix.net/uploads/{{ sensor.imageid }}" class="img-responsive">
+                                </div>
+                                <div v-else>
+                                    No picture
+                                </div>
+                            </td>
                             <td>
                                 <dl class="dl-horizontal">
                                     <dt>Temperature</dt>
