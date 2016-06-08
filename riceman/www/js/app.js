@@ -65,6 +65,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
+  .state('tab.projects', {
+    url: '/projects',
+    views: {
+      'tab-projects': {
+        templateUrl: 'templates/tab-projects.html',
+        controller: 'ProjectCtrl'
+      }
+    }
+  })
+
   .state('tab.monitor', {
     url: '/monitor-growth',
     views: {

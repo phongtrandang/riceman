@@ -96,7 +96,7 @@ angular.module('starter.controllers', [])
       maxWidth: 200,
       showDelay: 0
     });
-    var imgid = $scope.imagedata.image;
+    /*var imgid = $scope.imagedata.image;
     var score = $scope.imagedata.score;
     var temp = $scope.sensors.temp;
     var humidity = $scope.sensors.humidity;
@@ -106,6 +106,89 @@ angular.module('starter.controllers', [])
     $http.get('http://riceman.mybluemix.net/api/storepackage?imageid='+imgid+'&score='+score+'&temp='+temp+'&humidity='+humidity+'&soilmoisture='+soil+'&timestamp='+timestamp).then(function(res){
       console.log(res.data);
       $ionicLoading.hide();
+    });*/
+
+    var fileURL = $scope.imgURI;
+    var options = {
+      content: 'Loading',
+      fileKey: "file",
+      fileName: 'test.jpeg',
+      chunkedMode: true,
+      mimeType: "image/jpeg",
+    };
+
+    $cordovaFileTransfer.upload("http://ricedata.hackanoi.com/upload-single", fileURL, options).then(function(result) {
+      console.log("SUCCESS: " + JSON.stringify(result.response));
+      $ionicLoading.hide();
+    }, function(err) {
+      $ionicLoading.hide();
+      console.log("ERROR: " + JSON.stringify(err));
+    }, function (progress) {
+      // constant progress updates
     });
   }
+})
+
+.controller('ProjectCtrl', function($scope, $ionicPopup, $timeout, $http){
+  $scope.projects = "";
+
+  $scope.doRefresh = function(){
+    $http.get('http://ricedata.hackanoi.com/project/api/get')
+    .success(function(data, status, headers,config){
+      $scope.projects = data; // for UI
+      $scope.$broadcast('scroll.refreshComplete');
+    })
+    .error(function(data, status, headers,config){
+      console.log('data error');
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
+
+  $scope.doRefresh();
+  // An elaborate, custom popup
+  $scope.showPopup = function() {
+    $scope.project = {};
+
+    // An elaborate, custom popup
+    var projectPopup = $ionicPopup.show({
+      template: '<input type="text" ng-model="project.title">',
+      title: 'Create project',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: '<b>Save</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.project.title) {
+              //don't allow the user to close unless he enters wifi password
+              e.preventDefault();
+            } else {
+              return $scope.project.title;
+            }
+          }
+        }
+      ]
+    });
+
+    projectPopup.then(function(res) {
+      var data = {
+        name: res,
+      };
+      var config = {
+        'Access-Control-Allow-Origin': '*',
+
+      };
+      $http.post('http://ricedata.hackanoi.com/project/api/create', data, config).then(successCallback, errorCallback);
+
+      var successCallback = function(res) {
+        console.log(res);
+        doRefresh();
+      };
+      var errorCallback = function(res) {
+        console.log(res);
+      }
+    });
+  };
+
 });

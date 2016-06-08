@@ -6,7 +6,7 @@
 -->
 <ion-view view-title="Monitor Growth">
   <ion-content class="padding">
-    <div class="list card">
+   <!--  <div class="list card">
       <div class="item item-icon-left">
         <i class="icon ion-waterdrop"></i>
         1. Always shoot with the sun at your back.
@@ -23,7 +23,7 @@
         <i class="icon ion-erlenmeyer-flask"></i>
         4. Always shoot with the sun at your back.
       </div>
-    </div>
+    </div> -->
     <div class="row">
       <div class="col col-50">
         <button class="ion-camera button icon button-full button-positive" ng-click="takePicture()"> Take a photo </button>
@@ -35,6 +35,9 @@
     <div class="row" ng-show="imgURI !== undefined">
       <button class="button icon button-full button-positive" ng-click="checkPhoto()">Verify this tree</button>
     </div>
+    <div class="row" ng-show="imgURI !== undefined">
+      <button class="ion-android-upload button icon button-full button-positive" ng-click="StoreInfor()"></button>
+    </div>
     <div class="row image-data">
       <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}" style="text-align: center">
       <div class="data-sensor" ng-show="percent !== undefined">
@@ -43,9 +46,6 @@
         <span ng-show="sensors.humidity !== undefined">Humidity: {{sensors.humidity}}%</span><br/>
         <span ng-show="sensors.temp !== undefined">Temp: {{sensors.temp}}<sup>o</sup></span><br/>
       </div>
-    </div>
-    <div class="row" ng-show="sensors.soilmoisture !== undefined">
-      <button class="ion-android-upload button icon button-full button-positive" ng-click="StoreInfor()"></button>
     </div>
   </ion-content>
 </ion-view>
